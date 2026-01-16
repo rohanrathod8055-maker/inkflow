@@ -14,16 +14,16 @@ export default function Navbar() {
     }
 
     return (
-        <header className="absolute top-0 left-0 right-0 z-10 px-6 py-4 flex justify-between items-center bg-transparent pointer-events-none">
-            {/* Background gradient handled by layout or parent if needed, or we can add it here. 
-          Original header had: bg-gradient-to-b from-background-dark/90 to-transparent
-      */}
-            <div className="absolute inset-0 bg-gradient-to-b from-background-dark/90 to-transparent -z-10"></div>
+        <header className="sticky top-0 z-50 px-6 py-4 flex justify-between items-center bg-black/60 backdrop-blur-md border-b border-white/10 transition-all">
+            {/* Brand / Logo Area (Empty for now as requested, or keep existing layout structure) */}
+            <div className="flex items-center gap-4">
+                <div className="md:hidden text-accent font-bold text-xl tracking-tighter">INKFLOW</div>
+            </div>
 
-            <div className="pointer-events-auto relative w-full max-w-md">
-                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-dim">search</span>
+            <div className="relative w-full max-w-md mx-4">
+                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">search</span>
                 <input
-                    className="w-full bg-surface/50 backdrop-blur-md border border-white/10 rounded-full py-2.5 pl-10 pr-4 text-sm text-white placeholder-text-dim focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                    className="w-full bg-white/10 border border-white/20 rounded-full py-2.5 pl-12 pr-4 text-sm text-white placeholder-gray-400 focus:outline-none focus:bg-black/80 focus:ring-2 focus:ring-accent/50 transition-all"
                     placeholder="Search titles, artists, or genres..."
                     type="text"
                     value={query}
@@ -31,8 +31,9 @@ export default function Navbar() {
                     onKeyDown={handleKeyDown}
                 />
             </div>
-            <div className="flex gap-3 pointer-events-auto">
-                <button className="size-10 rounded-full bg-surface/50 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-colors">
+
+            <div className="flex gap-3">
+                <button className="size-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-colors">
                     <span className="material-symbols-outlined">notifications</span>
                 </button>
             </div>

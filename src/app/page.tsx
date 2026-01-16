@@ -39,7 +39,7 @@ export default async function Home() {
       {/* Hero Section */}
       <section className="relative h-[65vh] min-h-[500px] w-full group">
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[10s] group-hover:scale-105" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBrwt-s8IPeeiIs9lPoQVFDFPfXZbKUwP6cY9GVFRXdSNXp-QuP2gjssHvVHxoP9pp8L6FDqU6q8dE3u1atO0l2ObQalTkIpIcWFFsBlp6b2Pfpnw69mBoI5ZlAP1k46uDNYSr8fh78gBvE0DCQ7XHpUIB-f5MdOmK36LwfRHjuHrdp4_TrMAF2mnEYr5q4XfH6QoEpEKjZR7-_-mnRdHToKyz7goWhtsEip72BIokd-vMw-wDBYVe5HWF4LW_VEXdRGeebC847lpw')" }}></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/60 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-background-dark/90 via-background-dark/40 to-transparent"></div>
 
         <div className="absolute bottom-0 left-0 w-full px-6 lg:px-10 pb-12 flex flex-col items-start gap-4 max-w-3xl">
