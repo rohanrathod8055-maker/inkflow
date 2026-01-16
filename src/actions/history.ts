@@ -1,11 +1,10 @@
 'use server'
 
-import { createClient } from '@/lib/supabaseClient'
 import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
 
 export async function addToHistory(seriesId: string, chapterNumber: number) {
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -15,9 +14,13 @@ export async function addToHistory(seriesId: string, chapterNumber: number) {
                     return cookieStore.getAll()
                 },
                 setAll(cookiesToSet) {
-                    // Server Actions can't set cookies in the same request easily without middleware passing them, 
-                    // but for reading auth state this is sufficient.
-                    // Setting cookies happens in middleware/auth routes.
+                    try {
+                        cookiesToSet.forEach(({ name, value, options }) =>
+                            cookieStore.set(name, value, options)
+                        )
+                    } catch {
+                        // Safe to ignore in Server Component 
+                    }
                 },
             },
         }

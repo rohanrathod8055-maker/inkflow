@@ -158,7 +158,7 @@ export default async function SeriesPage({ params }: { params: Promise<{ id: str
                                                     {String(chapter.chapter_number).padStart(3, '0')}
                                                 </span>
                                                 <p className="font-medium text-white group-hover/chapter:text-accent transition-colors">
-                                                    {chapter.title || `Chapter ${chapter.chapter_number}`}
+                                                    {`Chapter ${chapter.chapter_number}`}
                                                 </p>
                                             </div>
                                             <div className="flex items-center gap-3">
