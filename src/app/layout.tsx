@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   description: "Your Manhwa Aggregation Platform",
 };
 
+import Sidebar from "@/components/Sidebar";
+import Navbar from "@/components/Navbar";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -19,9 +22,15 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body
-        className={`bg-background-dark text-white font-body antialiased h-screen w-full overflow-auto`}
+        className={`bg-background-dark text-white font-body antialiased h-screen w-full overflow-hidden flex`}
       >
-        {children}
+        <Sidebar />
+        <main className="flex-1 flex flex-col h-full relative ml-0 lg:ml-0 pl-20">
+          <Navbar />
+          <div className="flex-1 overflow-y-auto overflow-x-hidden pb-10 scroll-smooth">
+            {children}
+          </div>
+        </main>
       </body>
     </html>
   );

@@ -41,6 +41,9 @@ export default function Sidebar() {
                 <Link href="/" className="p-3 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
                     <span className="material-symbols-outlined">home</span>
                 </Link>
+                <Link href="/library" className="p-3 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
+                    <span className="material-symbols-outlined">library_books</span>
+                </Link>
                 <button className="p-3 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-colors relative group">
                     <span className="material-symbols-outlined">search</span>
                 </button>
