@@ -1,11 +1,8 @@
 import { supabase } from '@/lib/supabaseClient'
-import ChapterLink from '@/components/ChapterLink'
-import Sidebar from '@/components/Sidebar'
-import SeriesActions from '@/components/SeriesActions'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-export const revalidate = 60
+export const revalidate = 0
 
 interface Chapter {
     id: string
@@ -36,7 +33,7 @@ async function getSeriesDetails(id: string) {
         return null
     }
 
-    // Sort chapters desc
+    // Sort chapters desc (Newest First)
     const series = data as SeriesDetails
     if (series.chapters) {
         series.chapters.sort((a, b) => b.chapter_number - a.chapter_number)
@@ -53,132 +50,124 @@ export default async function SeriesPage({ params }: { params: Promise<{ id: str
         notFound()
     }
 
+    // Image logic
     const coverImage = series.cover_image_url ? `https://wsrv.nl/?url=${series.cover_image_url}` : 'https://via.placeholder.com/300x450'
-    const latestChapter = series.chapters && series.chapters.length > 0 ? series.chapters[0] : null
     const firstChapter = series.chapters && series.chapters.length > 0 ? series.chapters[series.chapters.length - 1] : null
 
-    // Determine latest chapter link
-    const startReadingLink = firstChapter ?
-        firstChapter.source_url.startsWith('http') ? firstChapter.source_url : `https://asuracomic.net/series/${firstChapter.source_url.replace(/^\//, '')}`
-        : '#'
-
-    const continueLink = latestChapter ?
-        latestChapter.source_url.startsWith('http') ? latestChapter.source_url : `https://asuracomic.net/series/${latestChapter.source_url.replace(/^\//, '')}`
-        : '#'
-
-
     return (
-        <div className="relative min-h-screen w-full bg-background-dark text-white selection:bg-accent selection:text-white">
+        <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-accent selection:text-black">
 
-            {/* Ambient Background */}
-            <div className="absolute inset-0 z-0">
-                <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/95 to-background-dark/80 z-10"></div>
+            {/* 1. The 'Glass' Hero Section */}
+            <div className="relative w-full h-[500px] overflow-hidden">
+                {/* Background Blur Layer */}
                 <div
-                    className="absolute inset-0 bg-cover bg-center blur-[100px] opacity-40 scale-110"
+                    className="absolute inset-0 bg-cover bg-center blur-3xl opacity-40 scale-110"
                     style={{ backgroundImage: `url('${coverImage}')` }}
                 ></div>
-            </div>
+                {/* Dark Overlay */}
+                <div className="absolute inset-0 bg-black/80 z-10"></div>
 
-            {/* Sidebar Navigation (Simplified for Focus) */}
-            <Sidebar />
+                {/* Hero Content Container */}
+                <div className="absolute inset-0 z-20 container mx-auto px-4 h-full flex items-center">
+                    <div className="flex flex-col md:flex-row items-center md:items-end gap-10 w-full translate-y-10">
 
-            {/* Main Content Area */}
-            <main className="relative z-10 ml-20 p-8 lg:p-12 xl:p-16 min-h-screen">
-                <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-
-                    {/* Left Column: Cover & Actions */}
-                    <div className="lg:col-span-4 flex flex-col gap-6 sticky top-8">
-                        <div className="relative aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-white/10 group">
+                        {/* Floating Cover Image */}
+                        <div className="relative shrink-0 w-[200px] md:w-[280px] aspect-[2/3] rounded-lg shadow-2xl shadow-black ring-1 ring-white/10 overflow-hidden transform hover:-translate-y-2 transition-transform duration-500">
                             <img
                                 src={coverImage}
                                 alt={series.title}
-                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                className="w-full h-full object-cover"
+                                unoptimized="true"
                             />
-                            {/* Status Badge */}
-                            <div className="absolute top-4 left-4 flex flex-col gap-2">
-                                <span className={`px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider backdrop-blur-md border border-white/10 ${series.status === 'ongoing' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                                    {series.status}
-                                </span>
-                            </div>
                         </div>
 
-                        <SeriesActions seriesId={id} />
-                    </div>
-
-                    {/* Right Column: Info & Chapters */}
-                    <div className="lg:col-span-8 flex flex-col gap-10">
-                        {/* Header Info */}
-                        <div className="flex flex-col gap-4">
-                            <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-black leading-[0.9] tracking-tighter text-white drop-shadow-lg">
+                        {/* 2. The Info Panel */}
+                        <div className="flex flex-col gap-6 pb-4 w-full text-center md:text-left">
+                            <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight drop-shadow-lg">
                                 {series.title}
                             </h1>
-                            <div className="flex items-center gap-6 text-sm font-medium text-gray-400">
-                                <span className="flex items-center gap-1.5 text-yellow-400">
-                                    <span className="material-symbols-outlined text-[20px] fill-current" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                                    <span className="text-white font-bold text-lg">{series.rating}</span>
-                                </span>
-                                <span className="w-1 h-1 rounded-full bg-white/20"></span>
-                                <span>{series.chapters.length} Chapters</span>
-                                <span className="w-1 h-1 rounded-full bg-white/20"></span>
-                                <span>Action, Fantasy</span>
-                            </div>
-                        </div>
 
-                        {/* Description */}
-                        <div className="relative group">
-                            <div className="absolute -inset-4 bg-white/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity -z-10 blur-xl"></div>
-                            <h3 className="text-sm font-bold text-text-dim uppercase tracking-wider mb-2">Synopsis</h3>
-                            <p className="text-gray-300 text-lg leading-relaxed font-light">
-                                {series.description || 'No description available for this series.'}
-                            </p>
-                        </div>
-
-                        {/* Chapter List */}
-                        <div className="flex flex-col gap-4">
-                            <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                                <h3 className="text-xl font-display font-bold text-white">Chapters</h3>
-                                <div className="flex items-center gap-2">
-                                    <button className="size-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
-                                        <span className="material-symbols-outlined text-[20px]">sort</span>
-                                    </button>
+                            {/* Metadata Row */}
+                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 text-sm font-bold uppercase tracking-widest text-gray-400">
+                                <div className="flex items-center gap-2 text-yellow-400">
+                                    <span className="text-lg">★</span>
+                                    <span>{series.rating} / 10</span>
                                 </div>
+                                <span className="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
+                                <span className={series.status === 'Ongoing' ? 'text-green-400' : 'text-blue-400'}>
+                                    {series.status}
+                                </span>
+                                <span className="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
+                                <span>Author Name</span>
                             </div>
 
-                            <div className="flex flex-col gap-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
-                                {series.chapters && series.chapters.map((chapter) => {
-                                    return (
-                                        <ChapterLink
-                                            key={chapter.id}
-                                            seriesId={id}
-                                            chapter={chapter}
-                                            className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-accent/30 transition-all group/chapter cursor-pointer"
-                                        >
-                                            <div className="flex items-center gap-4">
-                                                <span className="text-text-dim text-sm font-mono opacity-50 group-hover/chapter:text-accent group-hover/chapter:opacity-100 transition-colors">
-                                                    {String(chapter.chapter_number).padStart(3, '0')}
-                                                </span>
-                                                <p className="font-medium text-white group-hover/chapter:text-accent transition-colors">
-                                                    {`Chapter ${chapter.chapter_number}`}
-                                                </p>
-                                            </div>
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-xs text-text-dim">{new Date(chapter.release_date).toLocaleDateString()}</span>
-                                                <span className="material-symbols-outlined text-[20px] text-text-dim group-hover/chapter:translate-x-1 transition-transform">arrow_forward</span>
-                                            </div>
-                                        </ChapterLink>
-                                    )
-                                })}
-                                {!series.chapters || series.chapters.length === 0 && (
-                                    <div className="p-12 text-center text-gray-500 border border-dashed border-white/10 rounded-xl">
-                                        No chapters uploaded yet.
-                                    </div>
+                            {/* Action Buttons */}
+                            <div className="flex flex-wrap gap-4 mt-2 justify-center md:justify-start">
+                                {firstChapter ? (
+                                    <Link
+                                        href={`/series/${id}/${firstChapter.id}`}
+                                        className="px-8 py-4 bg-accent text-white font-black uppercase text-sm tracking-[0.15em] hover:bg-white hover:text-black transition-all shadow-lg shadow-accent/20 rounded-sm"
+                                    >
+                                        Read First Chapter
+                                    </Link>
+                                ) : (
+                                    <button disabled className="px-8 py-4 bg-gray-800 text-gray-500 font-bold uppercase text-sm tracking-widest cursor-not-allowed rounded-sm">
+                                        No Chapters
+                                    </button>
                                 )}
+                                <button className="px-8 py-4 bg-white/5 backdrop-blur-md border border-white/10 text-white font-bold uppercase text-sm tracking-widest hover:bg-white/20 transition-all rounded-sm flex items-center gap-2">
+                                    <span className="text-lg">+</span> Bookmark
+                                </button>
                             </div>
                         </div>
-
                     </div>
-                </div >
-            </main >
-        </div >
+                </div>
+            </div>
+
+            {/* 3. The Chapter List Section */}
+            <div className="bg-[#111] min-h-screen pt-20 pb-20">
+                <div className="container mx-auto px-4 max-w-5xl">
+
+                    {/* List Header */}
+                    <div className="flex items-center justify-between pb-6 border-b border-white/5 mb-4">
+                        <h3 className="text-xl font-black text-white uppercase tracking-widest border-l-4 border-accent pl-4">
+                            Latest Chapters
+                        </h3>
+                        <span className="text-xs font-bold text-gray-600 uppercase tracking-widest">
+                            {series.chapters.length} Releases
+                        </span>
+                    </div>
+
+                    {/* Chapter Grid */}
+                    <div className="flex flex-col gap-1">
+                        {series.chapters.length > 0 ? (
+                            series.chapters.map((chapter) => (
+                                <Link
+                                    key={chapter.id}
+                                    href={`/series/${id}/${chapter.id}`}
+                                    className="group flex items-center justify-between p-5 bg-[#161616] hover:bg-[#202020] border-l-2 border-transparent hover:border-accent transition-all duration-200"
+                                >
+                                    <div className="flex flex-col gap-1">
+                                        <span className="text-white font-bold text-sm group-hover:text-accent transition-colors">
+                                            Chapter {chapter.chapter_number}
+                                        </span>
+                                        <span className="text-[10px] text-gray-600 font-medium uppercase tracking-wider">
+                                            {new Date(chapter.release_date).toLocaleDateString()}
+                                        </span>
+                                    </div>
+                                    <div className="text-gray-600 group-hover:text-white transition-colors">
+                                        →
+                                    </div>
+                                </Link>
+                            ))
+                        ) : (
+                            <div className="p-10 text-center text-gray-600 italic">
+                                No chapters available yet.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
     )
 }

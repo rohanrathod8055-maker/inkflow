@@ -20,19 +20,13 @@ export default function ChapterLink({
     }
 
     // construct URL logic from previous page.tsx
-    const href = chapter.source_url.startsWith('http')
-        ? chapter.source_url
-        : `https://asuracomic.net/series/${chapter.source_url.replace(/^\//, '')}`
-
     return (
-        <a
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
+        <Link
+            href={`/series/${seriesId}/${chapter.id}`}
             className={className}
             onClick={handleClick}
         >
             {children}
-        </a>
+        </Link>
     )
 }

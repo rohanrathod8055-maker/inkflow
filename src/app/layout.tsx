@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning={true}>
       <head>
         <meta name="referrer" content="no-referrer" />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
@@ -23,11 +23,12 @@ export default function RootLayout({
       </head>
       <body
         className={`bg-background-dark text-white font-body antialiased h-screen w-full overflow-hidden flex`}
+        suppressHydrationWarning={true}
       >
         <Sidebar />
-        <main className="flex-1 flex flex-col h-full relative ml-0 lg:ml-0 pl-20">
+        <main className="flex-1 flex flex-col h-full relative ml-0 lg:ml-0 pl-20" suppressHydrationWarning={true}>
           <Navbar />
-          <div className="flex-1 overflow-y-auto overflow-x-hidden pb-10 scroll-smooth">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden pb-10 scroll-smooth" suppressHydrationWarning={true}>
             {children}
           </div>
         </main>
